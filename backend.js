@@ -18,8 +18,11 @@ app.get('/', (req, res) => {
 const backEndPlayers = {}
 const backEndProjectiles = {}
 
-const WINDOW_HEIGHT = 720
-const WINDOW_WIDTH = 1280
+// Origine Demension
+// const WINDOW_HEIGHT = 720
+// const WINDOW_WIDTH = 1280
+const WINDOW_HEIGHT = 600
+const WINDOW_WIDTH = 900
 
 const SPEED = 5
 const RADIUS = 10
