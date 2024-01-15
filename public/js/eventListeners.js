@@ -1,4 +1,5 @@
-addEventListener('click', (event) => {
+window.addEventListener('click', (event) => {
+
   if (!frontEndPlayers[socket.id]) return
   const canvas = document.querySelector('canvas')
   const { top, left } = canvas.getBoundingClientRect()
@@ -32,5 +33,4 @@ addEventListener('click', (event) => {
   //   })
   // )
 
-  console.log(frontEndProjectiles)
 })

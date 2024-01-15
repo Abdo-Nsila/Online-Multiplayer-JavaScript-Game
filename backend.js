@@ -19,10 +19,8 @@ const backEndPlayers = {}
 const backEndProjectiles = {}
 
 // Origine Demension
-// const WINDOW_HEIGHT = 720
 // const WINDOW_WIDTH = 1280
-const WINDOW_HEIGHT = 400
-const WINDOW_WIDTH = 750
+// const WINDOW_HEIGHT = 720
 
 const SPEED = 5
 const RADIUS = 10
@@ -31,7 +29,8 @@ let projectileId = 0
 
 io.on('connection', (socket) => {
   console.log('a user connected')
-  io.emit('connected', WINDOW_WIDTH, WINDOW_HEIGHT)
+  //! One Size for everyone
+  // io.emit('connected', WINDOW_WIDTH, WINDOW_HEIGHT)
   io.emit('updatePlayers', backEndPlayers)
 
   socket.on('shoot', ({ x, y, angle }) => {
@@ -52,10 +51,21 @@ io.on('connection', (socket) => {
     console.log(backEndProjectiles)
   })
 
+  socket.on('updateCanvasSize', ({ width, height }) => {
+    // where we update our canvas
+    console.log('h:', height, ' w:', width)
+    if (backEndPlayers[socket.id]) {
+      backEndPlayers[socket.id].canvas = {
+        width,
+        height
+      }
+    }
+  })
+
   socket.on('initGame', ({ username, width, height }) => {
     backEndPlayers[socket.id] = {
-      x: 1024 * Math.random(),
-      y: 576 * Math.random(),
+      x: (width - RADIUS) * Math.random(),
+      y: (height - RADIUS) * Math.random(),
       color: `hsl(${360 * Math.random()}, 100%, 50%)`,
       sequenceNumber: 0,
       score: 0,
@@ -110,13 +120,15 @@ io.on('connection', (socket) => {
 
     if (playerSides.left < 0) backEndPlayers[socket.id].x = backEndPlayer.radius
 
-    if (playerSides.right > WINDOW_WIDTH)
-      backEndPlayers[socket.id].x = WINDOW_WIDTH - backEndPlayer.radius
+    if (playerSides.right > backEndPlayers[socket.id].canvas.width)
+      backEndPlayers[socket.id].x =
+        backEndPlayers[socket.id].canvas.width - backEndPlayer.radius
 
     if (playerSides.top < 0) backEndPlayers[socket.id].y = backEndPlayer.radius
 
-    if (playerSides.bottom > WINDOW_HEIGHT)
-      backEndPlayers[socket.id].y = WINDOW_HEIGHT - backEndPlayer.radius
+    if (playerSides.bottom > backEndPlayers[socket.id].canvas.height)
+      backEndPlayers[socket.id].y =
+        backEndPlayers[socket.id].canvas.height - backEndPlayer.radius
   })
 })
 

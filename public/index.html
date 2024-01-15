@@ -1,5 +1,6 @@
 <html>
   <head>
+    <link rel="stylesheet" href="style.css" />
     <style>
       body {
         -webkit-font-smoothing: antialiased;
@@ -37,6 +38,25 @@
         <div id="playerLabels"></div>
       </div>
       <canvas></canvas>
+
+      <!-- Mobile Controle -->
+      <div class="controls">
+        <div class="control controlsX">
+          <button onclick="event.stopPropagation(); MobileMVT('left')">
+            LEFT
+          </button>
+          <button onclick="event.stopPropagation(); MobileMVT('right')">
+            RIGHT
+          </button>
+        </div>
+        <div class="control controlsY">
+          <button onclick="event.stopPropagation(); MobileMVT('up')">UP</button>
+          <button onclick="event.stopPropagation(); MobileMVT('down')">
+            DOWN
+          </button>
+        </div>
+      </div>
+      <!-- End Mobile Controle -->
 
       <!-- username input -->
       <div

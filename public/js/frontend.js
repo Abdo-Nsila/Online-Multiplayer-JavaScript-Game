@@ -7,15 +7,45 @@ const scoreEl = document.querySelector('#scoreEl')
 
 const devicePixelRatio = window.devicePixelRatio || 1
 
+const SPEED = 5
+const playerInputs = []
+let sequenceNumber = 0
+
+//! Mobile or Desktop User
+function isMobile() {
+  const regex =
+    /Mobi|Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i
+  return regex.test(navigator.userAgent)
+}
+
+if (!isMobile()) {
+  console.log('Desktop')
+  const mobileControls = document.querySelector('.controls')
+  mobileControls.style.display = 'none'
+} else {
+  console.log('Mobile')
+}
+
 // canvas.width = 1024 * devicePixelRatio
 // canvas.height = 576 * devicePixelRatio
+//! Custome Size for everyone
+canvas.width = window.innerWidth * devicePixelRatio
+canvas.height = window.innerHeight * devicePixelRatio
 
-socket.on('connected', (WINDOW_WIDTH, WINDOW_HEIGHT) => {
-  // console.log(WINDOW_HEIGHT)
-  // console.log(WINDOW_WIDTH)
-  canvas.width = WINDOW_WIDTH * devicePixelRatio
-  canvas.height = WINDOW_HEIGHT * devicePixelRatio
+window.addEventListener('resize', () => {
+  canvas.width = window.innerWidth * devicePixelRatio
+  canvas.height = window.innerHeight * devicePixelRatio
+  socket.emit('updateCanvasSize', {
+    width: window.innerWidth * devicePixelRatio,
+    height: window.innerHeight * devicePixelRatio
+  })
 })
+
+//! One Size for everyone
+// socket.on('connected', (WINDOW_WIDTH, WINDOW_HEIGHT) => {
+//   canvas.width = WINDOW_WIDTH * devicePixelRatio
+//   canvas.height = WINDOW_HEIGHT * devicePixelRatio
+// })
 
 c.scale(devicePixelRatio, devicePixelRatio)
 
@@ -165,6 +195,7 @@ function animate() {
 
 animate()
 
+//! Desktop device detected
 const keys = {
   w: {
     pressed: false
@@ -180,9 +211,6 @@ const keys = {
   }
 }
 
-const SPEED = 5
-const playerInputs = []
-let sequenceNumber = 0
 setInterval(() => {
   if (keys.w.pressed) {
     sequenceNumber++
@@ -268,3 +296,85 @@ document.querySelector('#usernameForm').addEventListener('submit', (event) => {
     username: username
   })
 })
+
+// -------------------------------------Mobile-----------------------------------
+
+//! Mobile device detected
+const buttons = {
+  up: {
+    pressed: false
+  },
+  left: {
+    pressed: false
+  },
+  down: {
+    pressed: false
+  },
+  right: {
+    pressed: false
+  }
+}
+
+function resetButtons(btn) {
+  for (const id in buttons) {
+    if (id !== btn) {
+      buttons[id].pressed = false
+    }
+  }
+}
+
+setInterval(() => {
+  if (buttons.up.pressed) {
+    sequenceNumber++
+    playerInputs.push({ sequenceNumber, dx: 0, dy: -SPEED })
+    // frontEndPlayers[socket.id].y -= SPEED
+    socket.emit('keydown', { keycode: 'KeyW', sequenceNumber })
+  }
+
+  if (buttons.left.pressed) {
+    sequenceNumber++
+    playerInputs.push({ sequenceNumber, dx: -SPEED, dy: 0 })
+    // frontEndPlayers[socket.id].x -= SPEED
+    socket.emit('keydown', { keycode: 'KeyA', sequenceNumber })
+  }
+
+  if (buttons.down.pressed) {
+    sequenceNumber++
+    playerInputs.push({ sequenceNumber, dx: 0, dy: SPEED })
+    // frontEndPlayers[socket.id].y += SPEED
+    socket.emit('keydown', { keycode: 'KeyS', sequenceNumber })
+  }
+
+  if (buttons.right.pressed) {
+    sequenceNumber++
+    playerInputs.push({ sequenceNumber, dx: SPEED, dy: 0 })
+    // frontEndPlayers[socket.id].x += SPEED
+    socket.emit('keydown', { keycode: 'KeyD', sequenceNumber })
+  }
+}, 15)
+
+function MobileMVT(btn) {
+  if (!frontEndPlayers[socket.id]) return
+
+  switch (btn) {
+    case 'up':
+      resetButtons('up')
+      buttons.up.pressed = true
+      break
+
+    case 'left':
+      resetButtons('left')
+      buttons.left.pressed = true
+      break
+
+    case 'down':
+      resetButtons('down')
+      buttons.down.pressed = true
+      break
+
+    case 'right':
+      resetButtons('right')
+      buttons.right.pressed = true
+      break
+  }
+}
