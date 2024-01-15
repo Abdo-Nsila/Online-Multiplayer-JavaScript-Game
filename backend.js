@@ -21,8 +21,8 @@ const backEndProjectiles = {}
 // Origine Demension
 // const WINDOW_HEIGHT = 720
 // const WINDOW_WIDTH = 1280
-const WINDOW_HEIGHT = 600
-const WINDOW_WIDTH = 900
+const WINDOW_HEIGHT = 400
+const WINDOW_WIDTH = 750
 
 const SPEED = 5
 const RADIUS = 10
