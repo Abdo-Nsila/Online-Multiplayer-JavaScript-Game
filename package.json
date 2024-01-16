@@ -7,6 +7,6 @@
     "node": "18.x"
   },
   "scripts":{
-    "start":"node backend.js"
+    "start":"node index.js"
   }
 }
